@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class wallpaper extends StatefulWidget {
   const wallpaper({Key? key}) : super(key: key);
@@ -28,7 +29,6 @@ class _wallpaperState extends State<wallpaper> {
     return imagePaths;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,35 +43,42 @@ class _wallpaperState extends State<wallpaper> {
             }
           else
             {
-              List list=snapshot.data;
+              List<AssetEntity>? list=snapshot.data as List<AssetEntity>;
               return ListView.builder(itemBuilder: (context, index) {
-                return Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      height: 400,
-                      width: double.infinity,
-                      child: Image.asset(fit: BoxFit.fill,"${list[index]}"),
-                    ),
-                    IconButton(onPressed: () async {
-
-                      print(list[index]);
-                      File f = await getImageFileFromAssets('${list[index]}');
-                      int location = WallpaperManager.BOTH_SCREEN; //can be Home/Lock Screen
-                      bool result = await WallpaperManager.setWallpaperFromFile(f.path, location);
-                      print(result);
-
-                    }, icon: Icon(Icons.download),color: Colors.white,iconSize: 50,)
-                  ],
+                return AssetEntityImage(
+                  list[0],
+                  isOriginal: false, // Defaults to `true`.
+                  thumbnailSize: const ThumbnailSize.square(200), // Preferred value.
+                  thumbnailFormat: ThumbnailFormat.jpeg, // Defaults to `jpeg`.
                 );
+                // return Stack(
+                //   alignment: Alignment.bottomRight,
+                //   children: [
+                //     Container(
+                //       height: 400,
+                //       width: double.infinity,
+                //       child: Image.asset(fit: BoxFit.fill,"${list[index]}"),
+                //     ),
+                //     IconButton(onPressed: () async {
+                //
+                //       print(list[index]);
+                //       File f = await getImageFileFromAssets('${list[index]}');
+                //       int location = WallpaperManager.BOTH_SCREEN; //can be Home/Lock Screen
+                //       bool result = await WallpaperManager.setWallpaperFromFile(f.path, location);
+                //       print(result);
+                //
+                //     }, icon: Icon(Icons.download),color: Colors.white,iconSize: 50,)
+                //   ],
+                // );
               },
-              itemCount: list.length,);
+              itemCount: 1,);
             }
         },
         future: _initImages(),
       ),
     );
   }
+
   Future<File> getImageFileFromAssets(String path) async {
     final byteData = await rootBundle.load('$path');
     var filepath = await ExternalPath.getExternalStoragePublicDirectory(ExternalPath.DIRECTORY_DOWNLOADS);

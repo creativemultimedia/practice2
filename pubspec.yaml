@@ -39,6 +39,7 @@ dependencies:
   flutter_wallpaper_manager:
   path_provider:
   external_path:
+  photo_manager:
 dev_dependencies:
   flutter_test:
     sdk: flutter
