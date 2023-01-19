@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:practice2/getlastimg.dart';
 import 'package:practice2/wallpaper.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: wallpaper(),
+    home: getlastimg(),
   ));
 }
 class slide extends StatefulWidget {

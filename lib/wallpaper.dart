@@ -43,35 +43,29 @@ class _wallpaperState extends State<wallpaper> {
             }
           else
             {
-              List<AssetEntity>? list=snapshot.data as List<AssetEntity>;
+              List? list=snapshot.data as List;
               return ListView.builder(itemBuilder: (context, index) {
-                return AssetEntityImage(
-                  list[0],
-                  isOriginal: false, // Defaults to `true`.
-                  thumbnailSize: const ThumbnailSize.square(200), // Preferred value.
-                  thumbnailFormat: ThumbnailFormat.jpeg, // Defaults to `jpeg`.
+                return Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Container(
+                      height: 400,
+                      width: double.infinity,
+                      child: Image.asset(fit: BoxFit.fill,"${list[index]}"),
+                    ),
+                    IconButton(onPressed: () async {
+
+                      print(list[index]);
+                      File f = await getImageFileFromAssets('${list[index]}');
+                      int location = WallpaperManager.BOTH_SCREEN; //can be Home/Lock Screen
+                      bool result = await WallpaperManager.setWallpaperFromFile(f.path, location);
+                      print(result);
+
+                    }, icon: Icon(Icons.download),color: Colors.white,iconSize: 50,)
+                  ],
                 );
-                // return Stack(
-                //   alignment: Alignment.bottomRight,
-                //   children: [
-                //     Container(
-                //       height: 400,
-                //       width: double.infinity,
-                //       child: Image.asset(fit: BoxFit.fill,"${list[index]}"),
-                //     ),
-                //     IconButton(onPressed: () async {
-                //
-                //       print(list[index]);
-                //       File f = await getImageFileFromAssets('${list[index]}');
-                //       int location = WallpaperManager.BOTH_SCREEN; //can be Home/Lock Screen
-                //       bool result = await WallpaperManager.setWallpaperFromFile(f.path, location);
-                //       print(result);
-                //
-                //     }, icon: Icon(Icons.download),color: Colors.white,iconSize: 50,)
-                //   ],
-                // );
               },
-              itemCount: 1,);
+              itemCount: list.length,);
             }
         },
         future: _initImages(),
